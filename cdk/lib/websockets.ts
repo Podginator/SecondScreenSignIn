@@ -34,9 +34,10 @@ export class WebsocketApi extends Construct {
     super(scope, id);
 
     const sendAuthFunction = new Function(this, "sendAuthToWebsocketFunction", {
-      code: new AssetCode("../api/sendauth"),
+      code: new AssetCode("../api/sendauth/dist"),
       handler: "index.handler",
       runtime: Runtime.NODEJS_16_X,
+      memorySize: 1024,
       environment: {
         TABLE_NAME: tableName,
         WEBSOCKET_URI: `https://${process.env.WS_DOMAIN}`
@@ -104,11 +105,11 @@ export class WebsocketApi extends Construct {
     });
 
     const connectFunc = new Function(this, "websocketOnConnectLambda", {
-      code: new AssetCode("../websockets"),
+      code: new AssetCode("../websockets/dist"),
       handler: "index.onConnectHandler",
       runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(300),
-      memorySize: 256,
+      memorySize: 1024,
       environment: {
         TABLE_NAME: tableName!!,
         WEBSOCKET_URI: `https://${process.env.WS_DOMAIN}`
@@ -116,11 +117,11 @@ export class WebsocketApi extends Construct {
     });
 
     const onMessage = new Function(this, "webSocketRequestLoginCode", {
-      code: new AssetCode("../websockets"),
+      code: new AssetCode("../websockets/dist"),
       handler: "index.onRequestCode",
       runtime: Runtime.NODEJS_12_X,
       timeout: Duration.seconds(300),
-      memorySize: 256,
+      memorySize: 1024,
       environment: {
         TABLE_NAME: tableName!!,
         WEBSOCKET_URI: `https://${process.env.WS_DOMAIN}`
