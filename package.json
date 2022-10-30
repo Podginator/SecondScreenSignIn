@@ -1,6 +1,8 @@
 {
   "name": "second-screen-sign-on",
   "version": "1.0.0",
+  "dependencies": {},
+  "devDependencies": {},
   "scripts": {
     "build-websockets": "cd ./websockets && npm i && npx webpack",
     "build-api": "cd ./api/sendauth && npm i && npx webpack",
