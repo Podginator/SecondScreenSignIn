@@ -7,7 +7,6 @@ import { ReactComponent as Tick } from "../tick.svg";
 export default function SignedIn() {
   const searchParams = useLocation();
   const [paramInfo, setParamInfo] = useState({});
-  const [stateInfo, setStateInfo] = useState({});
 
   const sendInformationToSecondScreen = (params) => {
     const requestOptions = {
@@ -35,14 +34,13 @@ export default function SignedIn() {
       idToken: qryParam.get("id_token"),
     });
     const state = JSON.parse(atob(qryParam.get("state")));
-    setStateInfo(state);
 
     if (window.location.hash) {
       window.history.replaceState("", document.title, window.location.pathname);
     }
 
     sendInformationToSecondScreen({ ...params, ...state });
-  }, []);
+  }, [searchParams]);
 
   const renderSelection = () => {
     const renderName = () => {

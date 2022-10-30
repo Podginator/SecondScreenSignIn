@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Routes, Route, Outlet, Link, BrowserRouter as Router, useSearchParams} from "react-router-dom";
+import { Routes, Route, Outlet, Link, BrowserRouter as Router} from "react-router-dom";
 import { Container, Typography } from '@mui/material';
 import SecondScreenInstructions from "./components/SecondScreenSplash";
 import SecondScreenLogin from "./components/SecondScreenLogin";

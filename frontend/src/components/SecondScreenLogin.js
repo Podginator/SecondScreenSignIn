@@ -40,7 +40,7 @@ export default function SecondScreenInstructions() {
     return () => {
       clearTimeout(timeout);
     };
-  }, []);
+  }, [searchParams]);
 
 
   const addedInputCode = (index) => (evt) => { 

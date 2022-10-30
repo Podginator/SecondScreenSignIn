@@ -73,7 +73,7 @@ export default function SecondScreenInstructions() {
     ws.current.onmessage = redirectOnAuthAndSetIdToken
 
     return () => { ws.current.close() };
-  }, []);
+  }, [redirectOnAuthAndSetIdToken, askForCodeAndPing]);
 
   if (!loginCode) { 
     return (<div>
@@ -121,7 +121,7 @@ export default function SecondScreenInstructions() {
               Or scan the following <HighlightText>QR Code</HighlightText>
             </Typography>
             <div style={{ textAlign: "center" }}>
-              <img id="qrCode" alt="qrcode" src={imgUrl} />
+              <img id="qrCode" alt="" src={imgUrl} />
             </div>
           </div>
         </Grid>
@@ -129,6 +129,7 @@ export default function SecondScreenInstructions() {
         <Grid item md={5}>
           <img
             src="black-front.png"
+            alt=""
             style={{ objectFit: "contain", width: "100%", height: "100%" }}
           />
         </Grid>
