@@ -90,7 +90,7 @@ export class WebsocketApi extends Construct {
     // initialise api
     const name = "websocketApi";
     const api = new CfnApi(this, name, {
-      name: "ChatAppApi",
+      name: "SingleSocketWebApp",
       protocolType: "WEBSOCKET",
       routeSelectionExpression: "$request.body.action",
     });
@@ -119,7 +119,7 @@ export class WebsocketApi extends Construct {
     const onMessage = new Function(this, "webSocketRequestLoginCode", {
       code: new AssetCode("../websockets/dist"),
       handler: "index.onRequestCode",
-      runtime: Runtime.NODEJS_12_X,
+      runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(300),
       memorySize: 1024,
       environment: {
