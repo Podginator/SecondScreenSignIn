@@ -90,6 +90,12 @@ export class WebsiteHosting extends Construct {
       zone: hostedZone,
     });
 
+    new ARecord(scope, "siteWWWAliasRecord", {
+      recordName: "www",
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+      zone: hostedZone,
+    });
+
     new BucketDeployment(this, "deployWithInvalidation", {
       sources: [Source.asset("../frontend/build")],
       destinationBucket: siteBucket,

@@ -128,8 +128,20 @@ export class WebsocketApi extends Construct {
       },
     });
 
+    const disconnectFunc = new Function(this, "websocketOnDisconnectLambda", {
+      code: new AssetCode("../websockets/dist"),
+      handler: "index.onDisconnectHandler",
+      runtime: Runtime.NODEJS_16_X,
+      timeout: Duration.seconds(300),
+      memorySize: 1024,
+      environment: {
+        TABLE_NAME: tableName!!,
+      },
+    });
+
     table.grantReadWriteData(connectFunc);
     table.grantReadWriteData(onMessage);
+    table.grantReadWriteData(disconnectFunc);
 
     const execApiPolicy = new PolicyStatement({
       effect: Effect.ALLOW,
@@ -184,6 +196,22 @@ export class WebsocketApi extends Construct {
       }
     );
 
+    const disconnectIntegration = new CfnIntegration(
+      this,
+      "onDisconnectLambdaIntegration",
+      {
+        apiId: api.ref,
+        integrationType: "AWS_PROXY",
+        integrationUri:
+          "arn:aws:apigateway:" +
+          process.env.CDK_REGION +
+          ":lambda:path/2015-03-31/functions/" +
+          disconnectFunc.functionArn +
+          "/invocations",
+        credentialsArn: role.roleArn,
+      }
+    );
+
     const loginCodeIntegration = new CfnIntegration(
       this,
       "requestLoginCodeIntegration",
@@ -224,6 +252,13 @@ export class WebsocketApi extends Construct {
       target: "integrations/" + connectIntegration.ref,
     });
 
+    const disconnectRoute = new CfnRoute(this, "websocketOnConnectRoute", {
+      apiId: api.ref,
+      routeKey: "$disconnect",
+      authorizationType: "NONE",
+      target: "integrations/" + disconnectIntegration.ref,
+    });
+
     const onCodeRoute = new CfnRoute(this, "websocketRequestLoginCodeRoute", {
       apiId: api.ref,
       routeKey: "loginCode",
@@ -233,6 +268,7 @@ export class WebsocketApi extends Construct {
 
     deployment.node.addDependency(connectRoute);
     deployment.node.addDependency(onCodeRoute);
+    deployment.node.addDependency(disconnectRoute);
 
     const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
       domainName: process.env.ZONE_NAME!!,
