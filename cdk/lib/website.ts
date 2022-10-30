@@ -61,7 +61,7 @@ export class WebsiteHosting extends Construct {
     const distribution = new Distribution(this, "siteDistribution", {
       certificate: cert,
       defaultRootObject: "index.html",
-      domainNames: [siteDomain],
+      domainNames: [siteDomain, `www.${siteDomain}`],
       minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
       errorResponses: [
         {
