@@ -25,34 +25,10 @@ const showLoginCode = (code) => {
 };
 
 export default function SecondScreenInstructions() {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [loginCode, setLoginCode] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const ws = useRef(null);
-
-  const askForCodeAndPing = () => {
-    const pingOnLoop = () => {
-      ws.current.send("ping");
-      setTimeout(pingOnLoop, 1000);
-    };
-
-    ws.current.send(JSON.stringify({ action: "loginCode" }));
-    pingOnLoop();
-  };
-
-  const redirectOnAuthAndSetIdToken = (evt) => {
-    const data = JSON.parse(evt.data);
-    if (data.idToken) {
-      localStorage.setItem("idToken", data.idToken);
-      history("/secondScreenSignedIn");
-      return;
-    }
-
-    if (data.loginCode) {
-      createQrCodeElement(data.loginCode);
-      setLoginCode(data.loginCode);
-    }
-  };
 
   const createQrCodeElement = (code) => {
     let canvas = document.createElement("canvas");
@@ -68,25 +44,49 @@ export default function SecondScreenInstructions() {
   };
 
   useEffect(() => {
+    const askForCodeAndPing = () => {
+      const pingOnLoop = () => {
+        ws.current.send("ping");
+        setTimeout(pingOnLoop, 1000);
+      };
+
+      ws.current.send(JSON.stringify({ action: "loginCode" }));
+      pingOnLoop();
+    };
+
+    const redirectOnAuthAndSetIdToken = (evt) => {
+      const data = JSON.parse(evt.data);
+      if (data.idToken) {
+        localStorage.setItem("idToken", data.idToken);
+        navigate("/secondScreenSignedIn");
+        return;
+      }
+
+      if (data.loginCode) {
+        createQrCodeElement(data.loginCode);
+        setLoginCode(data.loginCode);
+      }
+    };
+
     ws.current = new WebSocket("wss://ws.podginator.com");
     ws.current.onopen = askForCodeAndPing
     ws.current.onmessage = redirectOnAuthAndSetIdToken
 
     return () => { ws.current.close() };
-  }, [redirectOnAuthAndSetIdToken, askForCodeAndPing]);
+  }, [navigate]);
 
-  if (!loginCode) { 
+  if (!loginCode) {
     return (<div>
-    <Typography
-      component="p"
-      variant="p"
-      fontWeight={200}
-      color="white"
-      gutterBottom
-      textAlign={"center"}
-    >
-      Loading...
-    </Typography>
+      <Typography
+        component="p"
+        variant="p"
+        fontWeight={200}
+        color="white"
+        gutterBottom
+        textAlign={"center"}
+      >
+        Loading...
+      </Typography>
     </div>);
   }
 
