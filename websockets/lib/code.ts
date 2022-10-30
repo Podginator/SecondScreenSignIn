@@ -63,7 +63,7 @@ export function getKeyForConnectionId(connectionId: string): Promise<ClientLogin
       }
 
       const loginCodeMap = Items![0] as ClientLoginCodeMap;
-      logger.info(`Returned ${loginCodeMap.loginCode} for ${loginCodeMap.clientId}`);
+      logger.info(`Returned ${loginCodeMap.loginCode} for ${loginCodeMap.connectionId}`);
       return loginCodeMap;
     });
 }
