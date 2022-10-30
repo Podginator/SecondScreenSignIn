@@ -252,7 +252,7 @@ export class WebsocketApi extends Construct {
       target: "integrations/" + connectIntegration.ref,
     });
 
-    const disconnectRoute = new CfnRoute(this, "websocketOnConnectRoute", {
+    const disconnectRoute = new CfnRoute(this, "websocketDisonnectRoute", {
       apiId: api.ref,
       routeKey: "$disconnect",
       authorizationType: "NONE",
