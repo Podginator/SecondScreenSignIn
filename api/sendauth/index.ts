@@ -7,7 +7,7 @@ import { Logger } from '@aws-lambda-powertools/logger';
 const logger = new Logger({ serviceName: 'sendAuthToWebsocket' });
 
 type WebsocketAuthEvent = { 
-  inputCode: string, 
+  loginCode: string, 
   accessToken: string, 
   idToken: string,
   refreshToken: string
@@ -62,10 +62,10 @@ async function verifyToken(authToken: string): Promise<boolean> {
 
 export async function handler(event: APIGatewayEvent, _: APIGatewayEventRequestContext): Promise<APIGatewayProxyResultV2> { 
     const wsEvent = JSON.parse(event.body!!) as WebsocketAuthEvent;
-    logger.info(`Received Event for ${wsEvent.inputCode}`);
+    logger.info(`Received Event for ${wsEvent.loginCode}`);
 
     try { 
-      const connectionId = await retrieveConnectedWebsocketFromLoginCode(wsEvent.inputCode);
+      const connectionId = await retrieveConnectedWebsocketFromLoginCode(wsEvent.loginCode);
       const verifiedToken = await verifyToken(wsEvent.accessToken); 
 
       if (!verifiedToken) { 
@@ -73,7 +73,7 @@ export async function handler(event: APIGatewayEvent, _: APIGatewayEventRequestC
         return { statusCode: 401, body: JSON.stringify({ error: "Unable to validate token" })};
       }
 
-      logger.info(`sending Auth Tokens to ${connectionId} for ${wsEvent.inputCode}`);
+      logger.info(`sending Auth Tokens to ${connectionId} for ${wsEvent.loginCode}`);
       return await axios.post(`${process.env.WEBSOCKET_URI}/@connections/${connectionId}`, wsEvent)
         .then(_ => ({ statusCode: 200 }));
     } catch (error: any) { 
