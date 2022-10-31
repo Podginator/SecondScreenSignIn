@@ -1,21 +1,20 @@
 .background-customizable {
-    box-shadow: 0px 2px 20px rgba(0, 0, 0, 20%), 0 0 0 10000px #000;
-    background-color: black;
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 20%), 0 0 0 10000px #000 !important;
+    background-color: #000 !important;
     overflow: hidden;
-    color: rgb(255, 215, 143);
-    font-weight: 100;
+    color: rgb(255, 215, 143) !important;
+    font-weight: 100 !important;
 }
 
 .textDescription-customizable {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    color: rgb(255, 215, 143);
-    font-size: 1.75rem;
-
+    font-family: Roboto, Helvetica, Arial, sans-serif !important;
+    color: rgb(255, 215, 143) !important;
+    font-size: 1.75rem !important;
 }
 
 
 .banner-customizable {
-    display: none;
+    display: none !important;
 }
 
 .errorMessage-customizable {}
@@ -25,14 +24,15 @@
 .idpButton-customizable:hover {}
 
 .inputField-customizable {
-    height: 38px;
-    border: none;
-    border-bottom: 1px solid rgb(255, 215, 143);
-    border-radius: 0px;
+    height: 38px !important;
+    border: none !important;
+    border-bottom: 1px solid rgb(255, 215, 143) !important;
+    border-radius: 0px !important;
     box-sizing: border-box;
-    padding: 8px;
-    background: transparent;
-    color: white;
+    padding: 8px !important;
+    background: transparent !important;
+    color: white !important;
+    box-shadow: none !important; 
 }
 
 .inputField-customizable:focus {
@@ -50,13 +50,13 @@
 .logo-customizable {}
 
 .submitButton-customizable {
-    background-color: rgb(255, 215, 143);
-    border: none;
-    border-radius: 0px;
+    background-color: rgb(255, 215, 143) !important;
+    border: none !important;
+    border-radius: 0px !important;
 }
 
 .submitButton-customizable:hover {
-    background-color: #FFCE6E;
-    border: none;
-    border-radius: 0px;
+    background-color: #FFCE6E !important;
+    border: none !important;
+    border-radius: 0px !important;
 }
