@@ -92,7 +92,7 @@ export default function SecondScreenInstructions() {
   }
 
   return (
-    <div>
+    <div style={{ height: '500px', overflow: 'hidden' }}>
       <Grid container spacing={2}>
         <Grid item md={7}>
           <div>
