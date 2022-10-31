@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { SecondScreenSignOnStack as SecondScreenStack } from '../lib/cdk-stack';
+import { SecondScreenSignOnStack } from '../lib/secondScreenSignOnStack';
 
 const app = new cdk.App();
-new SecondScreenStack(app, 'SecondScreenStack', {
+new SecondScreenSignOnStack(app, 'SecondScreenStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
