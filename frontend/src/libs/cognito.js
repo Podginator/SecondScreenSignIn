@@ -1,10 +1,10 @@
 import { CognitoIdToken, CognitoUserSession, CognitoUser, CognitoAccessToken, CognitoRefreshToken,  CognitoUserPool } from 'amazon-cognito-identity-js';
 
-const TOKEN_URL = "https://podginatorssso.auth.eu-west-1.amazoncognito.com/oauth2/token"
+const TOKEN_URL = `${process.env.REACT_APP_AUTH_URL}/oauth2/token`;
 
 const userPool = new CognitoUserPool({
-    UserPoolId: `eu-west-1_F3Riur46m`,
-    ClientId: `35vtfdgo5jolhcpumvof6k9oo8`,
+    UserPoolId: process.env.REACT_APP_USERPOOL_ID,
+    ClientId: process.env.REACT_APP_CLIENT_ID,
   });
 
 export const setSignedInUserFromTokens = (tokens) => { 
@@ -17,7 +17,7 @@ export const setSignedInUserFromTokens = (tokens) => {
       const cognitoRefreshToken = new CognitoRefreshToken({
         RefreshToken: tokens.refreshToken,
       });
-      const username = cognitoIdToken.payload.email; // or what you use as username, e.g. email
+      const username = cognitoIdToken.payload.email; 
 
       const user = new CognitoUser({
         Username: username,
@@ -46,8 +46,8 @@ export const getTokensFromTokenUrl = (code) => {
       body: new URLSearchParams({
         "grant_type": "authorization_code",
         code,
-        "client_id": "35vtfdgo5jolhcpumvof6k9oo8",
-        "redirect_uri": "https://podginator.com/signedIn"
+        "client_id": process.env.REACT_APP_CLIENT_ID,
+        "redirect_uri": `https://${process.env.REACT_APP_DOMAIN}/signedIn`
       })
     })
       .then(it => it.json())

@@ -36,7 +36,7 @@ export default function SecondScreenInstructions() {
     let canvas = document.createElement("canvas");
     bwipjs.toCanvas(canvas, {
       bcid: "qrcode", // Barcode type
-      text: `https://podginator.com/tv?code=${code}`, // Text to encode
+      text: `https://${process.env.REACT_APP_DOMAIN}/tv?code=${code}`, // Text to encode
       textxalign: "center", // Always good to set this,
       barcolor: "FFFFFF",
       width: 50,
@@ -69,7 +69,7 @@ export default function SecondScreenInstructions() {
       }
     };
 
-    ws.current = new WebSocket("wss://ws.podginator.com");
+    ws.current = new WebSocket(process.env.REACT_APP_WS_URL);
     ws.current.onopen = askForCodeAndPing
     ws.current.onmessage = redirectOnAuthAndSetIdToken
 
@@ -104,7 +104,7 @@ export default function SecondScreenInstructions() {
               gutterBottom
               textAlign={"center"}
             >
-              Sign in at <HighlightText>www.podginator.com/tv</HighlightText>{" "}
+              Sign in at <HighlightText>{process.env.REACT_APP_DOMAIN}/tv</HighlightText>{" "}
               and enter code:
             </Typography>
 

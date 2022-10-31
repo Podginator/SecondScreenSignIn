@@ -5,7 +5,7 @@ import { InputCode } from './InputCode';
 import React, { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const AUTH_URL = "https://podginatorssso.auth.eu-west-1.amazoncognito.com/login?response_type=code&client_id=35vtfdgo5jolhcpumvof6k9oo8&redirect_uri=https://podginator.com/signedIn"
+const AUTH_URL = `${process.env.REACT_APP_AUTH_URL}/login?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=https://${process.env.REACT_APP_DOMAIN}/signedIn`
 
 const buttonStyle = {
     backgroundColor: '#ffd78f',

@@ -18,7 +18,7 @@ export default function SignedIn() {
       body: JSON.stringify(params),
     };
 
-    return fetch("https://api.podginator.com/send", requestOptions);
+    return fetch(process.env.REACT_APP_SEND_API, requestOptions);
   };
 
   useEffect(() => {
