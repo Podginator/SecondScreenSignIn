@@ -53,12 +53,12 @@ export class CognitoUserPool extends Construct {
       }
     );
 
-
     userPool.addClient("secondSignOnExampleClient", {
       generateSecret: false,
       oAuth: {
         flows: {
           implicitCodeGrant: true,
+          authorizationCodeGrant: true,
         },
         scopes: [OAuthScope.OPENID, OAuthScope.EMAIL, OAuthScope.PROFILE],
         callbackUrls: JSON.parse(process.env.CALLBACKS!!),

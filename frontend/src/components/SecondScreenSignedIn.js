@@ -1,17 +1,14 @@
 import { Typography, Stack } from "@mui/material";
 import React from "react";
-import jwt_decode from "jwt-decode";
 import { ReactComponent as Tick } from "../tick.svg";
+import { useAuth } from "../context/AuthContext";
 
 // Largely a copy of the SignedIn Screen, but just used as a demo t
 // to show the JWT has been transfered nad contains the correct information
 export default function SecondScreenSignedIn() {
-  const idToken = localStorage.getItem("idToken");
+  const { state: { fullName, user }} = useAuth();
   
   const renderName = () => {
-    const jwtToken = jwt_decode(idToken);
-    const fullName = `${jwtToken.given_name} ${jwtToken.family_name}`;
-
     return (
       <Typography component="h1" variant="h4" fontWeight={500} mt="20px">
         Signed in as <span style={{ color: "#ffd78f" }}>{fullName}</span>
@@ -20,7 +17,7 @@ export default function SecondScreenSignedIn() {
   };
 
   const renderJwtOutput = () => {
-    if (!idToken) {
+    if (!user) {
       return (
         <Typography component="h1" variant="h4" fontWeight={500} mt="20px">
           Not currently authenticated! Try logging in first.

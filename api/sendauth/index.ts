@@ -9,7 +9,8 @@ const logger = new Logger({ serviceName: 'sendAuthToWebsocket' });
 type WebsocketAuthEvent = { 
   inputCode: string, 
   accessToken: string, 
-  idToken: string
+  idToken: string,
+  refreshToken: string
 };
 
 const interceptor = aws4Interceptor({

@@ -6,6 +6,7 @@ import bwipjs from "bwip-js";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const HighlightText = styled(Link)(({ theme }) => ({
   ...theme.typography.body1,
@@ -26,6 +27,7 @@ const showLoginCode = (code) => {
 
 export default function SecondScreenInstructions() {
   const navigate = useNavigate();
+  const { setUserFromToken } = useAuth();
   const [loginCode, setLoginCode] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const ws = useRef(null);
@@ -57,8 +59,7 @@ export default function SecondScreenInstructions() {
     const redirectOnAuthAndSetIdToken = (evt) => {
       const data = JSON.parse(evt.data);
       if (data.idToken) {
-        localStorage.setItem("idToken", data.idToken);
-        navigate("/secondScreenSignedIn");
+        setUserFromToken(data).then(_ => navigate("/secondScreenSignedIn"));
         return;
       }
 
@@ -73,7 +74,7 @@ export default function SecondScreenInstructions() {
     ws.current.onmessage = redirectOnAuthAndSetIdToken
 
     return () => { ws.current.close() };
-  }, [navigate]);
+  }, [navigate, setUserFromToken]);
 
   if (!loginCode) {
     return (<div>
