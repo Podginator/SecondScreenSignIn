@@ -52,8 +52,6 @@ export class CognitoUserPool extends Construct {
         css: fs.readFileSync('./static/cognito.css').toString('utf-8'),
       }
     );
-    userPoolUi.node.addDependency(userPool)
-    userPoolUi.node.addDependency(userPoolDomain)
 
 
     userPool.addClient("secondSignOnExampleClient", {
@@ -72,6 +70,8 @@ export class CognitoUserPool extends Construct {
         domainPrefix: process.env.PREFIX!!,
       },
     });
+
+    userPoolUi.node.addDependency(userPool);
 
     const cfnUserPool = userPool.node.defaultChild as CfnUserPool;
     cfnUserPool.emailConfiguration = {
