@@ -43,7 +43,7 @@ export class CognitoUserPool extends Construct {
       email: UserPoolEmail.withCognito(process.env.EMAIL),
     });
 
-    new CfnUserPoolUICustomizationAttachment(
+    const userPoolUi = new CfnUserPoolUICustomizationAttachment(
       this,
       'UserPoolHostedUICustomisation',
       {
@@ -52,6 +52,9 @@ export class CognitoUserPool extends Construct {
         css: fs.readFileSync('./static/cognito.css').toString('utf-8'),
       }
     );
+    userPoolUi.node.addDependency(userPool)
+    userPoolUi.node.addDependency(userPoolDomain)
+
 
     userPool.addClient("secondSignOnExampleClient", {
       generateSecret: false,
