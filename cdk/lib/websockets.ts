@@ -104,18 +104,6 @@ export class WebsocketApi extends Construct {
       ),
     });
 
-    const connectFunc = new Function(this, "websocketOnConnectLambda", {
-      code: new AssetCode("../websockets/dist"),
-      handler: "index.onConnectHandler",
-      runtime: Runtime.NODEJS_16_X,
-      timeout: Duration.seconds(300),
-      memorySize: 1024,
-      environment: {
-        TABLE_NAME: tableName!!,
-        WEBSOCKET_URI: `https://${process.env.WS_DOMAIN}`
-      },
-    });
-
     const onMessage = new Function(this, "webSocketRequestLoginCode", {
       code: new AssetCode("../websockets/dist"),
       handler: "index.onRequestCode",
@@ -139,7 +127,6 @@ export class WebsocketApi extends Construct {
       },
     });
 
-    table.grantReadWriteData(connectFunc);
     table.grantReadWriteData(onMessage);
     table.grantReadWriteData(disconnectFunc);
 
@@ -155,12 +142,6 @@ export class WebsocketApi extends Construct {
       })
     );
 
-    connectFunc.role?.attachInlinePolicy(
-      new Policy(this, "executeConnectPolicy", {
-        statements: [execApiPolicy],
-      })
-    );
-
     sendAuthFunction.role?.attachInlinePolicy(
       new Policy(this, "executeSendAuthPolicy", {
         statements: [execApiPolicy],
@@ -170,7 +151,7 @@ export class WebsocketApi extends Construct {
     // access role for the socket api to access the socket lambda
     const policy = new PolicyStatement({
       effect: Effect.ALLOW,
-      resources: [connectFunc.functionArn, onMessage.functionArn],
+      resources: [onMessage.functionArn],
       actions: ["lambda:InvokeFunction"],
     });
 
@@ -180,22 +161,6 @@ export class WebsocketApi extends Construct {
     role.addToPolicy(policy);
 
     // lambda integration
-    const connectIntegration = new CfnIntegration(
-      this,
-      "onConnectLambdaIntegration",
-      {
-        apiId: api.ref,
-        integrationType: "AWS_PROXY",
-        integrationUri:
-          "arn:aws:apigateway:" +
-          process.env.CDK_REGION +
-          ":lambda:path/2015-03-31/functions/" +
-          connectFunc.functionArn +
-          "/invocations",
-        credentialsArn: role.roleArn,
-      }
-    );
-
     const disconnectIntegration = new CfnIntegration(
       this,
       "onDisconnectLambdaIntegration",
@@ -245,13 +210,6 @@ export class WebsocketApi extends Construct {
       stage: stage.ref,
     });
 
-    const connectRoute = new CfnRoute(this, "websocketOnConnectRoute", {
-      apiId: api.ref,
-      routeKey: "$connect",
-      authorizationType: "NONE",
-      target: "integrations/" + connectIntegration.ref,
-    });
-
     const disconnectRoute = new CfnRoute(this, "websocketDisonnectRoute", {
       apiId: api.ref,
       routeKey: "$disconnect",
@@ -266,7 +224,6 @@ export class WebsocketApi extends Construct {
       target: "integrations/" + loginCodeIntegration.ref,
     });
 
-    deployment.node.addDependency(connectRoute);
     deployment.node.addDependency(onCodeRoute);
     deployment.node.addDependency(disconnectRoute);
 

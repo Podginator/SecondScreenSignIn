@@ -79,7 +79,7 @@ function generateRandomCode(): string {
     .join("");
 }
 
-export function addRandomCodeForUser(connectionId: string): Promise<string> {
+export function addRandomCodeForUser(connectionId: string): Promise<ClientLoginCodeMap> {
   const ttl = Math.floor((new Date()).getTime() / 1000) + 3600;
   const loginCode = generateRandomCode();
 
@@ -96,7 +96,7 @@ export function addRandomCodeForUser(connectionId: string): Promise<string> {
 
   return documentClient.put(putParameters)
     .promise()
-    .then((_) => loginCode)
+    .then((_) => ({loginCode, connectionId}))
     .catch((err: AWSError) => {
       if (err.name === "ConditionalCheckFailedException") {
         logger.warn(`Code already used, trying to generate new code`);

@@ -19,12 +19,12 @@ export function onRequestCode(event: APIGatewayProxyWebsocketEventV2, _: APIGate
     const connectionId = event.requestContext.connectionId;
     logger.info(`Retrieved request for code from ${connectionId}`);
 
-    return getKeyForConnectionId(connectionId)
+    return addRandomCodeForUser(connectionId)
         .then(loginMap => sendLoginCodeBackToClient(connectionId, loginMap.loginCode))
         .then(loginCode => ({
             statusCode: 200,
             body: loginCode
-        }))
+        }));       
 }
 
 export function onDisconnectHandler(event: APIGatewayProxyWebsocketEventV2, _: APIGatewayEventRequestContext): Promise<APIGatewayProxyResultV2> {
