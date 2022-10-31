@@ -49,7 +49,7 @@ export class CognitoUserPool extends Construct {
       {
         userPoolId: userPool.userPoolId,
         clientId: 'ALL',
-        css: fs.readFileSync('../static/cognito.css').toString('utf-8'),
+        css: fs.readFileSync('./static/cognito.css').toString('utf-8'),
       }
     );
 
