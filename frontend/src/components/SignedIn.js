@@ -57,7 +57,6 @@ export default function SignedIn() {
         </Typography>
       );
     };
-    console.log(user);
     if (user) {
       return (
         <div>

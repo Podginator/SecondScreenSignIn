@@ -17,7 +17,6 @@ export const setSignedInUserFromTokens = (tokens) => {
       const cognitoRefreshToken = new CognitoRefreshToken({
         RefreshToken: tokens.refreshToken,
       });
-      console.log(cognitoIdToken.payload);
       const username = cognitoIdToken.payload.email; // or what you use as username, e.g. email
 
       const user = new CognitoUser({

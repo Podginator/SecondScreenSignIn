@@ -4,7 +4,9 @@
     overflow: hidden;
     color: rgb(255, 215, 143) !important;
     font-weight: 100 !important;
+    background: #000 !important;
 }
+
 
 .textDescription-customizable {
     font-family: Roboto, Helvetica, Arial, sans-serif !important;
@@ -51,12 +53,14 @@
 
 .submitButton-customizable {
     background-color: rgb(255, 215, 143) !important;
+    background: rgb(255, 215, 143) !important;
     border: none !important;
     border-radius: 0px !important;
 }
 
 .submitButton-customizable:hover {
     background-color: #FFCE6E !important;
+    background: #FFCE6E !important;
     border: none !important;
     border-radius: 0px !important;
 }
