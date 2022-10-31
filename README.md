@@ -30,4 +30,8 @@ https://www.podginator.com has a working example.
 * AWS SDK - Typescript 
 * Github actions for CI CD 
 
+## Architecture 
+
+![Architecture Diagram](./docs/img/architecture.png)
+
 
