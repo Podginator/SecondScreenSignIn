@@ -94,7 +94,7 @@ export default function SecondScreenInstructions() {
   return (
     <div style={{ height: '500px', overflow: 'hidden' }}>
       <Grid container spacing={2}>
-        <Grid item md={7}>
+        <Grid item md={7} xs={12}>
           <div>
             <Typography
               component="p"
@@ -127,7 +127,7 @@ export default function SecondScreenInstructions() {
           </div>
         </Grid>
 
-        <Grid item md={5}>
+        <Grid item md={5} display={{ xs: "none", md: "block" }}>
           <img
             src="black-front.png"
             alt=""

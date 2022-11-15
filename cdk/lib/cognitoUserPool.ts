@@ -6,7 +6,6 @@ import {
   CfnUserPoolUICustomizationAttachment
 } from "aws-cdk-lib/aws-cognito";
 import { Construct } from "constructs";
-import * as fs from 'fs';
 
 export class CognitoUserPool extends Construct {
   userPool: UserPool;
@@ -42,16 +41,6 @@ export class CognitoUserPool extends Construct {
 
       email: UserPoolEmail.withCognito(process.env.EMAIL),
     });
-
-    const userPoolUi = new CfnUserPoolUICustomizationAttachment(
-      this,
-      'UserPoolHostedUICustomisation',
-      {
-        userPoolId: userPool.userPoolId,
-        clientId: 'ALL',
-        css: fs.readFileSync('./static/cognito.css').toString('utf-8'),
-      }
-    );
 
     userPool.addClient("secondSignOnExampleClient", {
       generateSecret: false,
