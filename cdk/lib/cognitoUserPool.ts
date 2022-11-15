@@ -3,7 +3,6 @@ import {
   UserPoolEmail,
   OAuthScope,
   CfnUserPool,
-  CfnUserPoolUICustomizationAttachment
 } from "aws-cdk-lib/aws-cognito";
 import { Construct } from "constructs";
 
@@ -60,7 +59,6 @@ export class CognitoUserPool extends Construct {
       },
     });
 
-    userPoolUi.node.addDependency(userPool);
 
     const cfnUserPool = userPool.node.defaultChild as CfnUserPool;
     cfnUserPool.emailConfiguration = {
