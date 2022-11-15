@@ -1,6 +1,6 @@
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { Construct } from "constructs";
-import { HostedZone, ARecord, RecordTarget, CnameRecord } from "aws-cdk-lib/aws-route53";
+import { HostedZone, ARecord, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { Duration } from "aws-cdk-lib";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { PolicyStatement, CanonicalUserPrincipal } from "aws-cdk-lib/aws-iam";
@@ -90,9 +90,10 @@ export class WebsiteHosting extends Construct {
       zone: hostedZone,
     });
 
-    new CnameRecord(scope, "siteWWWAliasRecord", {
+    new ARecord(scope, "siteWWWAliasRecord", {
+      recordName: "www",
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
       zone: hostedZone,
-      domainName: `www.${siteDomain}`
     });
 
     new BucketDeployment(this, "deployWithInvalidation", {
