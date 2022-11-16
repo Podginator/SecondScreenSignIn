@@ -49,10 +49,8 @@ export class WebsocketApi extends Construct {
     table.grantReadWriteData(sendAuthFunction);
 
     // Rest API backed by the helloWorldFunction
-    const sendAuthRestApi = new LambdaRestApi(this, "sendAuthToWebsocketRestApi", {
+    const sendAuthRestApi = new RestApi(this, "sendAuthToWebsocketRestApi", {
       restApiName: "Second Screen Sign On",
-      handler: sendAuthFunction,
-      proxy: false,
       defaultCorsPreflightOptions: {
         allowHeaders: [
           '*',
@@ -288,7 +286,8 @@ export class WebsocketApi extends Construct {
       }
     ];
 
-    const validateCode = restApi.root.addResource("validate/{id}");
+    const validateCodeRoot = restApi.root.addResource("validate");
+    const validateCode = validateCodeRoot.addResource("{id}");
   
     const getIntegration = new AwsIntegration({
       action: 'GetItem',
