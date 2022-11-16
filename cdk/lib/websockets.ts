@@ -272,6 +272,12 @@ export class WebsocketApi extends Construct {
     const responses: IntegrationResponse[] = [
       {
         statusCode: '200',
+        responseParameters: { 
+          "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Methods": "*",
+          "Access-Control-Allow-Origin": "*"
+        },
         responseTemplates: {
           'application/json': `
             #set($inputRoot = $input.path('$'))
@@ -281,7 +287,7 @@ export class WebsocketApi extends Construct {
             #set($context.responseOverride.status = 404)
             #end
             `
-        }
+        },
       }
     ];
 

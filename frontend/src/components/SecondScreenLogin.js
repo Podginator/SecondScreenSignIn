@@ -28,7 +28,7 @@ export default function SecondScreenInstructions() {
   };
 
   const validateCode = debounce((value) => { 
-    return fetch(`${process.env.REACT_APP_API}/validate/${value}`, { method: "GET"})
+    return fetch(`${process.env.REACT_APP_API}/validate/${value}`, { method: "GET" })
       .then((res) => { 
         if (res.status === 200) { 
           setValidCode(true);
