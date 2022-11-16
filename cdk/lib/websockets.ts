@@ -272,11 +272,10 @@ export class WebsocketApi extends Construct {
     const responses: IntegrationResponse[] = [
       {
         statusCode: '200',
-        responseParameters: { 
-          "Access-Control-Allow-Credentials": "true",
-          "Access-Control-Allow-Headers": "*",
-          "Access-Control-Allow-Methods": "*",
-          "Access-Control-Allow-Origin": "*"
+        responseParameters: {
+          "Access-Control-Allow-Headers": "'*'",
+          "Access-Control-Allow-Methods": "'*'",
+          "Access-Control-Allow-Origin": "'*'"
         },
         responseTemplates: {
           'application/json': `
