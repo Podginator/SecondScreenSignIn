@@ -288,8 +288,7 @@ export class WebsocketApi extends Construct {
       }
     ];
 
-    const validateCodeRoot = restApi.root.addResource("validate");
-    const validateCode = validateCodeRoot.addResource("{id}");
+    const validateCode = restApi.root.addResource("validate/{id}");
   
     const getIntegration = new AwsIntegration({
       action: 'GetItem',
@@ -312,5 +311,7 @@ export class WebsocketApi extends Construct {
     });
 
     validateCode.addMethod('GET', getIntegration);
+
+    return getIntegration;
   }
 }
