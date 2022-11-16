@@ -1,6 +1,5 @@
 import { Duration } from "aws-cdk-lib";
 import {
-  LambdaRestApi,
   CfnAuthorizer,
   LambdaIntegration,
   AwsIntegration,
@@ -252,7 +251,7 @@ export class WebsocketApi extends Construct {
   }
 
 
- createDynamoDBIntegration(restApi: RestApi, table: Table, tableName: string)  {
+  createDynamoDBIntegration(restApi: RestApi, table: Table, tableName: string) {
     const getPolicy = new Policy(this, 'getCodePolicy', {
       statements: [
         new PolicyStatement({
@@ -292,7 +291,7 @@ export class WebsocketApi extends Construct {
 
     const validateCodeRoot = restApi.root.addResource("validate");
     const validateCode = validateCodeRoot.addResource("{id}");
-  
+
     const getIntegration = new AwsIntegration({
       action: 'GetItem',
       service: 'dynamodb',
@@ -313,7 +312,21 @@ export class WebsocketApi extends Construct {
       }
     });
 
-    validateCode.addMethod('GET', getIntegration, { methodResponses: [{ statusCode: '200'}, { statusCode: '404'}]});
+    validateCode.addMethod('GET', getIntegration, {
+      methodResponses: [{
+        statusCode: '200', responseParameters: {
+          'method.response.header.Access-Control-Allow-Headers': true,
+          'method.response.header.Access-Control-Allow-Methods': true,
+          'method.response.header.Access-Control-Allow-Origin': true,
+        }
+      }, {
+        statusCode: '404', responseParameters: {
+          'method.response.header.Access-Control-Allow-Headers': true,
+          'method.response.header.Access-Control-Allow-Methods': true,
+          'method.response.header.Access-Control-Allow-Origin': true,
+        }
+      }]
+    });
 
     return getIntegration;
   }
