@@ -3,8 +3,11 @@ import {
   LambdaRestApi,
   CfnAuthorizer,
   LambdaIntegration,
+  AwsIntegration,
   AuthorizationType,
   DomainName,
+  RestApi,
+  IntegrationResponse,
 } from "aws-cdk-lib/aws-apigateway";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
 import { UserPool } from "aws-cdk-lib/aws-cognito";
@@ -246,5 +249,68 @@ export class WebsocketApi extends Construct {
         new ApiGateway(sendAuthRestApi)
       ),
     });
+  }
+
+
+ createDynamoDBIntegration(restApi: RestApi, table: Table, tableName: string)  {
+    const getPolicy = new Policy(this, 'getCodePolicy', {
+      statements: [
+        new PolicyStatement({
+          actions: ['dynamodb.GetItem'],
+          effect: Effect.ALLOW,
+          resources: [table.tableArn]
+        })
+      ]
+    });
+
+    const getItemRole = new Role(this, 'getCodeRole', {
+      assumedBy: new ServicePrincipal('apigatway.amazonaws.com')
+    })
+
+    getItemRole.attachInlinePolicy(getPolicy);
+
+    const responses: IntegrationResponse[] = [
+      {
+        statusCode: '200',
+        responseTemplates: {
+          'application/json': `
+            #set($inputRoot = $input.path('$'))
+            #if($inputRoot.toString().contains("Item"))
+            $input.json("$")
+            #set($context.responseOverride.status = 200)
+            #else
+            #set($context.responseOverride.status = 404)
+            #end
+            `
+        }
+      }
+    ];
+
+    const validateCode = restApi.root.addResource("validate");
+    validateCode.addResource("{id}");
+
+
+    const getIntegration = new AwsIntegration({
+      action: 'GetItem',
+      service: 'dynamodb',
+      options: {
+        credentialsRole: getItemRole,
+        integrationResponses: responses,
+        requestTemplates: {
+          'application/json': `{
+            "Key": { 
+              "loginCode": { 
+                "S": "$method.request.path.id"
+              }
+            },
+            "TableName": "${tableName}" 
+            }
+          }`,
+        }
+      }
+    });
+
+    
+
   }
 }
