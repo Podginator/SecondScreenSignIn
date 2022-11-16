@@ -258,7 +258,7 @@ export class WebsocketApi extends Construct {
     const getPolicy = new Policy(this, 'getCodePolicy', {
       statements: [
         new PolicyStatement({
-          actions: ['dynamodb.GetItem'],
+          actions: ['dynamodb:GetItem'],
           effect: Effect.ALLOW,
           resources: [table.tableArn]
         })
