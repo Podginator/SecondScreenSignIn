@@ -273,9 +273,9 @@ export class WebsocketApi extends Construct {
       {
         statusCode: '200',
         responseParameters: {
-          "Access-Control-Allow-Headers": "'*'",
-          "Access-Control-Allow-Methods": "'*'",
-          "Access-Control-Allow-Origin": "'*'"
+          "method.response.header.Access-Control-Allow-Headers": "'*'",
+          "method.response.header.Access-Control-Allow-Methods": "'*'",
+          "method.response.header.Access-Control-Allow-Origin": "'*'"
         },
         responseTemplates: {
           'application/json': `
