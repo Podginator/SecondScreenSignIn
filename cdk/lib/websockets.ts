@@ -274,9 +274,7 @@ export class WebsocketApi extends Construct {
         statusCode: '200',
         responseTemplates: {
           'application/json': `
-            #set($inputRoot = $input.path('$'))
             #if($inputRoot.toString().contains("Item"))
-            $input.json("$")
             #set($context.responseOverride.status = 200)
             #else
             #set($context.responseOverride.status = 404)
