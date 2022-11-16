@@ -71,6 +71,8 @@ export class WebsocketApi extends Construct {
       },
     });
 
+    this.createDynamoDBIntegration(sendAuthRestApi, table, tableName);
+
     // We want to ensure that the only person who can send a websocket message to the original 
     // is the user who was authorized to do so. 
     const authorizer = new CfnAuthorizer(this, "sendAuthToWebsocketAuthorizer", {
@@ -286,10 +288,9 @@ export class WebsocketApi extends Construct {
       }
     ];
 
-    const validateCode = restApi.root.addResource("validate");
-    validateCode.addResource("{id}");
-
-
+    const validateCodeRoot = restApi.root.addResource("validate");
+    const validateCode = validateCodeRoot.addResource("{id}");
+  
     const getIntegration = new AwsIntegration({
       action: 'GetItem',
       service: 'dynamodb',
@@ -310,7 +311,6 @@ export class WebsocketApi extends Construct {
       }
     });
 
-    
-
+    validateCode.addMethod('GET', getIntegration);
   }
 }
