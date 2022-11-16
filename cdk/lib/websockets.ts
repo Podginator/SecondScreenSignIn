@@ -309,7 +309,7 @@ export class WebsocketApi extends Construct {
       }
     });
 
-    validateCode.addMethod('GET', getIntegration);
+    validateCode.addMethod('GET', getIntegration, { methodResponses: [{ statusCode: '200'}, { statusCode: '404'}]});
 
     return getIntegration;
   }
