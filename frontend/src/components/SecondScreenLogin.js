@@ -1,6 +1,7 @@
 import { Grid, Typography, Stack, Button } from "@mui/material";
 import { Item } from './Item';
 import { InputCode } from './InputCode'; 
+import { debounce } from 'lodash';
 
 import React, { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -19,11 +20,25 @@ const buttonStyle = {
 export default function SecondScreenInstructions() {
   const [ searchParams ] = useSearchParams();
   const [ inputCode, setInputCode ] = useState([]);
+  const [ validCode, setValidCode ] = useState(false);
   const inputRefs = useRef([useRef(), useRef(), useRef(), useRef()]);
 
   const sendLoginCode = (inputCodeParam) => { 
     window.location.href = `${AUTH_URL}&state=${btoa(JSON.stringify({inputCode: inputCodeParam}))}`;
   };
+
+  const validateCode = debounce((value) => { 
+    return fetch(`${process.env.REACT_APP_API}/validate/${value}`, { method: "GET"})
+      .then((res) => { 
+        if (res.status === 200) { 
+          setValidCode(true);
+          return; 
+        }
+
+        setValidCode(false);
+      })
+
+  }, 250);
 
   React.useEffect(() => {
     const inputCodeParam = searchParams.get("code");
@@ -41,7 +56,6 @@ export default function SecondScreenInstructions() {
       clearTimeout(timeout);
     };
   }, [searchParams]);
-
 
   const addedInputCode = (index) => (evt) => { 
     const inputCodes = [...inputCode]; 
@@ -61,6 +75,9 @@ export default function SecondScreenInstructions() {
     }
     
     setTimeout(() => inputRefs.current[Math.min(index + 1, 3)].current.focus(), 50);
+    if (inputCodes.length === 4) { 
+      validateCode(inputCodes.join(''));
+    }
     setInputCode(inputCodes)
   }
 
@@ -95,7 +112,7 @@ export default function SecondScreenInstructions() {
           {renderInputCode()}
         </Grid>
         <Grid item md={12} textAlign={"center"}>
-          <Button onClick={(evt) => sendLoginCode(inputCode.join(""))} disabled={inputCode.some(it => it == null)} sx={buttonStyle}>Login</Button>
+          <Button onClick={(evt) => sendLoginCode(inputCode.join(""))} disabled={!validCode} sx={buttonStyle}>Login</Button>
         </Grid>
       </Grid>
     </div>
