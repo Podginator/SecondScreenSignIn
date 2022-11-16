@@ -266,7 +266,7 @@ export class WebsocketApi extends Construct {
     });
 
     const getItemRole = new Role(this, 'getCodeRole', {
-      assumedBy: new ServicePrincipal('apigatway.amazonaws.com')
+      assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
     })
 
     getItemRole.attachInlinePolicy(getPolicy);
