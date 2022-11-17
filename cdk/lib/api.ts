@@ -101,14 +101,6 @@ export class Api extends Construct {
         const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
             domainName: process.env.ZONE_NAME!!,
         });
-
-        new ARecord(this, "apiGatewayRecordSetRestApi", {
-            recordName: "api",
-            zone: hostedZone,
-            target: RecordTarget.fromAlias(
-                new ApiGateway(sendAuthRestApi)
-            ),
-        });
     }
 
 

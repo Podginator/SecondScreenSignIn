@@ -21,6 +21,7 @@ export default function SecondScreenInstructions() {
   const [ searchParams ] = useSearchParams();
   const [ inputCode, setInputCode ] = useState([]);
   const [ validCode, setValidCode ] = useState(false);
+  const [ showInvalidCodeError, setShowInvalidCodeError ] = useState(false);
   const inputRefs = useRef([useRef(), useRef(), useRef(), useRef()]);
 
   const sendLoginCode = (inputCodeParam) => { 
