@@ -1,4 +1,3 @@
-import { Duration } from "aws-cdk-lib";
 import {
     CfnAuthorizer,
     LambdaIntegration,
@@ -13,16 +12,8 @@ import { UserPool } from "aws-cdk-lib/aws-cognito";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { Construct } from "constructs";
-import { ApiGatewayDomain, ApiGateway } from 'aws-cdk-lib/aws-route53-targets';
+import { ApiGateway } from 'aws-cdk-lib/aws-route53-targets';
 import { Policy } from "aws-cdk-lib/aws-iam";
-import {
-    CfnApi,
-    CfnDeployment,
-    CfnIntegration,
-    CfnRoute,
-    CfnStage,
-    CfnApiMapping,
-} from "aws-cdk-lib/aws-apigatewayv2";
 import {
     Effect,
     PolicyStatement,
