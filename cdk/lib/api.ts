@@ -3,7 +3,6 @@ import {
     LambdaIntegration,
     AwsIntegration,
     AuthorizationType,
-    DomainName,
     RestApi,
     IntegrationResponse,
 } from "aws-cdk-lib/aws-apigateway";
@@ -52,7 +51,7 @@ export class Api extends Construct {
         // To send the authentication code back to the websocket connected to the code. 
         this.createSendAuthIntegration(sendAuthRestApi, userPool, table, tableName)
 
-        const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
+        const hostedZone = HostedZone.fromLookup(this, 'apiHostedZone', {
             domainName: process.env.ZONE_NAME!!,
         });
 
