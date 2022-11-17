@@ -29,6 +29,7 @@ export default function SecondScreenInstructions() {
   };
 
   const validateCode = debounce((value) => { 
+    setShowInvalidCodeError(false);
     return fetch(`${process.env.REACT_APP_API}/validate/${value}`, { method: "GET" })
       .then((res) => { 
         if (res.status === 200) { 
@@ -36,6 +37,7 @@ export default function SecondScreenInstructions() {
           return; 
         }
 
+        setShowInvalidCodeError(true);
         setValidCode(false);
       })
 
@@ -93,6 +95,18 @@ export default function SecondScreenInstructions() {
     );
   };
 
+  const renderErrorIfNeeded = () => { 
+    if (showInvalidCodeError) { 
+      return ( 
+        <Grid display={false} item md={12} textAlign={"center"}>
+          { `Invalid code ${inputCode.join('')} - Not found` }
+        </Grid>
+      )
+    }
+
+    return null;
+  }
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -115,6 +129,7 @@ export default function SecondScreenInstructions() {
         <Grid item md={12} textAlign={"center"}>
           <Button onClick={(evt) => sendLoginCode(inputCode.join(""))} disabled={!validCode} sx={buttonStyle}>Login</Button>
         </Grid>
+        {renderErrorIfNeeded()}
       </Grid>
     </div>
   );
