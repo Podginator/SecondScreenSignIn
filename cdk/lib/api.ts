@@ -79,6 +79,16 @@ export class Api extends Construct {
         });
         table.grantReadWriteData(sendAuthFunction);
 
+        const execApiPolicy = new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: ["execute-api:*"],
+            resources: ["*"], // TODO, fix this.
+        });
+
+        sendAuthFunction.role?.attachInlinePolicy(new Policy(this, "executeOnMessagePolicy", {
+            statements: [execApiPolicy],
+        }));
+
         // We want to ensure that the only person who can send a websocket message to the original 
         // is the user who was authorized to do so. 
         const authorizer = new CfnAuthorizer(this, "sendAuthToWebsocketAuthorizer", {
