@@ -97,10 +97,6 @@ export class Api extends Construct {
                 authorizerId: authorizer.ref,
             },
         });
-
-        const hostedZone = HostedZone.fromLookup(this, 'HostedZone', {
-            domainName: process.env.ZONE_NAME!!,
-        });
     }
 
 
