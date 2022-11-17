@@ -32,62 +32,8 @@ import {
 import { AssetCode, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 
 export class WebsocketApi extends Construct {
-  constructor(scope: Construct, id: string, userPool: UserPool, table: Table, tableName: string) {
+  constructor(scope: Construct, id: string, table: Table, tableName: string) {
     super(scope, id);
-
-    const sendAuthFunction = new Function(this, "sendAuthToWebsocketFunction", {
-      code: new AssetCode("../api/sendauth/dist"),
-      handler: "index.handler",
-      runtime: Runtime.NODEJS_16_X,
-      memorySize: 1024,
-      environment: {
-        TABLE_NAME: tableName,
-        WEBSOCKET_URI: `https://${process.env.WS_DOMAIN}`
-      },
-    });
-    table.grantReadWriteData(sendAuthFunction);
-
-    // Rest API backed by the helloWorldFunction
-    const sendAuthRestApi = new RestApi(this, "sendAuthToWebsocketRestApi", {
-      restApiName: "Second Screen Sign On",
-      defaultCorsPreflightOptions: {
-        allowHeaders: [
-          '*',
-        ],
-        allowMethods: ['*'],
-        allowCredentials: true,
-        allowOrigins: ['*'],
-      },
-      domainName: {
-        domainName: process.env.API_DOMAIN!!,
-        certificate: Certificate.fromCertificateArn(
-          this,
-          "ACM_Certificate_API",
-          process.env.CERT_ARN!!
-        ),
-      },
-    });
-
-    this.createDynamoDBIntegration(sendAuthRestApi, table, tableName);
-
-    // We want to ensure that the only person who can send a websocket message to the original 
-    // is the user who was authorized to do so. 
-    const authorizer = new CfnAuthorizer(this, "sendAuthToWebsocketAuthorizer", {
-      restApiId: sendAuthRestApi.restApiId,
-      name: "AuthToWSAuthorizer",
-      type: "COGNITO_USER_POOLS",
-      identitySource: "method.request.header.Authorization",
-      providerArns: [userPool.userPoolArn],
-    });
-
-    const sendAuth = sendAuthRestApi.root.addResource("send");
-
-    sendAuth.addMethod("POST", new LambdaIntegration(sendAuthFunction), {
-      authorizationType: AuthorizationType.COGNITO,
-      authorizer: {
-        authorizerId: authorizer.ref,
-      },
-    });
 
     // initialise api
     const name = "websocketApi";
@@ -241,93 +187,6 @@ export class WebsocketApi extends Construct {
       ),
     });
 
-    new ARecord(this, "apiGatewayRecordSetRestApi", {
-      recordName: "api",
-      zone: hostedZone,
-      target: RecordTarget.fromAlias(
-        new ApiGateway(sendAuthRestApi)
-      ),
-    });
   }
 
-
-  createDynamoDBIntegration(restApi: RestApi, table: Table, tableName: string) {
-    const getPolicy = new Policy(this, 'getCodePolicy', {
-      statements: [
-        new PolicyStatement({
-          actions: ['dynamodb:GetItem'],
-          effect: Effect.ALLOW,
-          resources: [table.tableArn]
-        })
-      ]
-    });
-
-    const getItemRole = new Role(this, 'getCodeRole', {
-      assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
-    })
-
-    getItemRole.attachInlinePolicy(getPolicy);
-
-    const responses: IntegrationResponse[] = [
-      {
-        statusCode: '200',
-        responseParameters: {
-          "method.response.header.Access-Control-Allow-Headers": "'*'",
-          "method.response.header.Access-Control-Allow-Methods": "'*'",
-          "method.response.header.Access-Control-Allow-Origin": "'*'"
-        },
-        responseTemplates: {
-          'application/json': `
-            #set($inputRoot = $input.path('$'))
-            #if($inputRoot.toString().contains("Item"))
-            #set($context.responseOverride.status = 200)
-            #else
-            #set($context.responseOverride.status = 404)
-            #end
-            `
-        },
-      }
-    ];
-
-    const validateCodeRoot = restApi.root.addResource("validate");
-    const validateCode = validateCodeRoot.addResource("{id}");
-
-    const getIntegration = new AwsIntegration({
-      action: 'GetItem',
-      service: 'dynamodb',
-      options: {
-        credentialsRole: getItemRole,
-        integrationResponses: responses,
-        requestTemplates: {
-          'application/json': `{
-            "Key": { 
-              "loginCode": { 
-                "S": "$method.request.path.id"
-              }
-            },
-            "TableName": "${tableName}" 
-            }
-          }`,
-        }
-      }
-    });
-
-    validateCode.addMethod('GET', getIntegration, {
-      methodResponses: [{
-        statusCode: '200', responseParameters: {
-          'method.response.header.Access-Control-Allow-Headers': true,
-          'method.response.header.Access-Control-Allow-Methods': true,
-          'method.response.header.Access-Control-Allow-Origin': true,
-        }
-      }, {
-        statusCode: '404', responseParameters: {
-          'method.response.header.Access-Control-Allow-Headers': true,
-          'method.response.header.Access-Control-Allow-Methods': true,
-          'method.response.header.Access-Control-Allow-Origin': true,
-        }
-      }]
-    });
-
-    return getIntegration;
-  }
 }

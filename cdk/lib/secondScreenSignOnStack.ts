@@ -5,6 +5,7 @@ import { DynamoDBTable } from "./dynamodb";
 import { WebsiteHosting } from "./website";
 import { WebsocketApi } from "./websockets";
 import * as dotenv from "dotenv";
+import { Api } from "./api";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ export class SecondScreenSignOnStack extends cdk.Stack {
       ddb.table,
       ddb.tableName
     );
-    new WebsiteHosting(this, "website");
+    new Api(this, `${id}-restApi`)
+    new WebsiteHosting(this, `${id}-website`);
   }
 }
