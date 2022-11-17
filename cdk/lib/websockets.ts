@@ -1,15 +1,8 @@
 import { Duration } from "aws-cdk-lib";
 import {
-  CfnAuthorizer,
-  LambdaIntegration,
-  AwsIntegration,
-  AuthorizationType,
   DomainName,
-  RestApi,
-  IntegrationResponse,
 } from "aws-cdk-lib/aws-apigateway";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
-import { UserPool } from "aws-cdk-lib/aws-cognito";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { Construct } from "constructs";
@@ -86,12 +79,6 @@ export class WebsocketApi extends Construct {
 
     onMessage.role?.attachInlinePolicy(
       new Policy(this, "executeOnMessagePolicy", {
-        statements: [execApiPolicy],
-      })
-    );
-
-    sendAuthFunction.role?.attachInlinePolicy(
-      new Policy(this, "executeSendAuthPolicy", {
         statements: [execApiPolicy],
       })
     );

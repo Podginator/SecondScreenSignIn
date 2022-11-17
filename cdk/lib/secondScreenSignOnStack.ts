@@ -24,11 +24,10 @@ export class SecondScreenSignOnStack extends cdk.Stack {
     new WebsocketApi(
       this,
       `${id}-ws`,
-      cognito.userPool,
       ddb.table,
       ddb.tableName
     );
-    new Api(this, `${id}-restApi`)
+    new Api(this, `${id}-restApi`, cognito.userPool, ddb.table, ddb.tableName);
     new WebsiteHosting(this, `${id}-website`);
   }
 }
