@@ -27,7 +27,7 @@ https://www.podginator.com has a working example.
 * Amazon API Gateway and Websockets for communication between the devices. 
 * AWS Lambda
 * DynamoDB 
-* AWS SDK - Typescript 
+* AWS CDK - Typescript 
 * Github actions for CI CD 
 
 ## Architecture 
